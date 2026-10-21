@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NomadPulse AppState",
+  "description": "Estado guardado en LocalStorage (clave: nomadpulse.state). Un solo Trip. DailyFoodLimit, totalDays y disponibles se calculan, no se guardan.",
+  "type": "object",
+  "required": ["version", "trip", "categories", "expenses", "itinerary"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "trip": {
+      "description": "null si aún no se ha creado el viaje.",
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Trip" }]
+    },
+    "categories": { "type": "array", "items": { "$ref": "#/$defs/Category" } },
+    "expenses": { "type": "array", "items": { "$ref": "#/$defs/Expense" } },
+    "itinerary": { "type": "array", "items": { "$ref": "#/$defs/ItineraryItem" } }
+  },
+  "$defs": {
+    "Trip": {
+      "type": "object",
+      "required": ["id", "name", "startDate", "endDate", "globalBudget"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date", "description": "No puede ser anterior a startDate (REQ-013)." },
+        "globalBudget": { "$ref": "#/$defs/GlobalBudget" }
+      }
+    },
+    "GlobalBudget": {
+      "type": "object",
+      "required": ["total"],
+      "additionalProperties": false,
+      "properties": {
+        "total": { "type": "number", "exclusiveMinimum": 0, "description": "REQ-001, REQ-011." }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "required": ["id", "name", "amount"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1, "description": "Único. La de nombre \"Comida\" define foodBudget (REQ-002, REQ-004)." },
+        "amount": { "type": "number", "exclusiveMinimum": 0, "description": "La suma de todas no supera globalBudget.total (REQ-003)." }
+      }
+    },
+    "Expense": {
+      "type": "object",
+      "required": ["id", "type", "amount", "categoryId", "date"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["pre-trip", "on-trip"], "description": "REQ-005, REQ-006." },
+        "amount": { "type": "number", "exclusiveMinimum": 0, "description": "REQ-011." },
+        "categoryId": { "type": "string", "minLength": 1, "description": "Id de una Category existente (REQ-015)." },
+        "date": { "type": "string", "format": "date", "description": "Si es on-trip, dentro del rango del Trip (REQ-014)." }
+      }
+    },
+    "ItineraryItem": {
+      "type": "object",
+      "required": ["id", "date", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "date": { "type": "string", "format": "date", "description": "Dentro del rango del Trip (REQ-010)." },
+        "time": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$", "description": "Opcional, HH:MM. Sin hora: orden de ingreso (REQ-010)." },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
