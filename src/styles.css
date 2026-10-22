@@ -171,3 +171,20 @@ body {
 .sheet-handle { width: 44px; height: 5px; border-radius: 9px; background: #DDD5C6; margin: 0 auto 14px; }
 .sheet-title { font-size: 20px; font-weight: 800; margin: 10px 0 4px; }
 .button-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+
+/* Formularios */
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.note { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
+.success-text { font-size: 13px; color: var(--primary); font-weight: 700; text-align: center; }
+.form-actions { display: grid; gap: 10px; margin-top: 16px; }
+.pill-toggle.readonly button { cursor: not-allowed; }
+.pill-toggle.readonly button[aria-pressed="false"] { opacity: .5; }
+
+/* Días totales (pantalla Viaje) */
+.days-box { background: var(--primary-soft); border-radius: 16px; padding: 12px 14px; margin-top: 12px; }
+.days-label { font-weight: 700; color: var(--primary); font-size: 14px; }
+.days-value { font-size: 30px; font-weight: 800; color: var(--primary); }
+
+/* Registros que bloquean un cambio de fechas (REQ-025) */
+.affected-list { margin: 8px 0 0 18px; color: var(--text); }
+.affected-list li { margin-top: 3px; }

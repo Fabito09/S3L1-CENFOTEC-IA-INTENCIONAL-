@@ -69,7 +69,7 @@
   - **REQ:** 019, 047.
   - **Hecho cuando:** se navega entre las 5 pestañas, y el botón ₡ ⇄ $ muestra el aviso si no hay tipo de cambio.
 
-- [ ] **T3.2 Pantalla Viaje: `components/TripScreen.js`** (wireframe 1)
+- [x] **T3.2 Pantalla Viaje: `components/TripScreen.js`** (wireframe 1)
   - **Qué:** crear y editar el viaje; `CurrencyPicker` (solo lectura al editar); campo "Tipo de cambio (₡ por $1)"; Días Totales calculados; lista de registros afectados al cambiar fechas; eliminar con confirmación.
   - **REQ:** 001, 013, 024–028, 045, 046, 048.
   - **Hecho cuando:** fin antes de inicio muestra el error del wireframe; al editar, la moneda no se puede cambiar.

@@ -2,7 +2,8 @@
 
 import { el, icon } from './dom.js';
 import { ConfirmDialog } from './ConfirmDialog.js';
-import { resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
+import { TripScreen } from './TripScreen.js';
+import { deleteTrip, resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
 
 // Orden de la barra inferior según el wireframe. hasAmounts: muestra el botón ₡ ⇄ $ (design.md §3).
 // render: cada pantalla se conecta aquí en su tarea (T3.2 a T3.7).
@@ -11,7 +12,7 @@ const SCREENS = [
   { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, task: 'T3.4 y T3.5' },
   { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, task: 'T3.7' },
   { id: 'categories', label: 'Categorías', icon: 'grid', title: 'Categorías', hasAmounts: true, task: 'T3.3' },
-  { id: 'trip', label: 'Viaje', icon: 'bag', title: 'Mi viaje', hasAmounts: true, task: 'T3.2' },
+  { id: 'trip', label: 'Viaje', icon: 'bag', title: 'Mi viaje', hasAmounts: true, render: TripScreen },
 ];
 
 // Aviso provisional para las pantallas que aún no se construyen.
@@ -60,6 +61,17 @@ function getConfirmProps(pendingDelete) {
       onConfirm: () => {
         setPendingDelete(null);
         resetData();
+      },
+    };
+  }
+  if (pendingDelete.kind === 'trip') {
+    return {
+      title: '¿Eliminar el viaje?',
+      message: 'Se borrarán el viaje con todas sus categorías, gastos y actividades. No se puede deshacer.',
+      confirmLabel: 'Eliminar',
+      onConfirm: () => {
+        setPendingDelete(null);
+        deleteTrip();
       },
     };
   }

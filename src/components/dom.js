@@ -35,6 +35,17 @@ export function el(tag, props = {}, ...children) {
   return element;
 }
 
+// Mensaje de error debajo de un campo (wireframe: "⚠ ..."). Sin mensaje no dibuja nada.
+export function FieldError(message) {
+  return message ? el('p', { className: 'error-text', role: 'alert' }, `⚠ ${message}`) : null;
+}
+
+// YYYY-MM-DD → DD/MM/YYYY, como en el wireframe.
+export function formatDate(isoDate) {
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+}
+
 export function icon(name, size = 22) {
   const svg = document.createElementNS(SVG_NS, 'svg');
   svg.setAttribute('viewBox', '0 0 24 24');
