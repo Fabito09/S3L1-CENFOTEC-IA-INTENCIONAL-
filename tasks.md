@@ -108,7 +108,7 @@
 
 ## Fase 5: Verificación con el cliente y cierre
 
-- [ ] **T5.1 Prueba de estrés del negocio** (las 3 que hará el profesor)
+- [x] **T5.1 Prueba de estrés del negocio** (las 3 que hará el profesor)
   1. **Persistencia:** crear datos, presionar F5 y comprobar que no se pierde nada.
   2. **Restricción semántica:** intentar registrar un gasto de `-500` y comprobar que se rechaza.
   3. **Lógica dinámica:** registrar un gasto de Comida hoy y comprobar que el disponible se recalcula con `(Total Comida / Días Totales) − Acumulado del Día`.
