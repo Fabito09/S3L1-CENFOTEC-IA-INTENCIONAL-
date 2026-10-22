@@ -4,16 +4,29 @@ import { el, icon } from './dom.js';
 import { ConfirmDialog } from './ConfirmDialog.js';
 import { TripScreen } from './TripScreen.js';
 import { CategoriesScreen } from './CategoriesScreen.js';
+import { ExpenseForm, openExpenseForm } from './ExpenseForm.js';
 import { deleteTrip, resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
+
+// Provisional hasta T3.5 (ExpenseList): solo permite abrir el formulario.
+function ExpensesPending(state) {
+  return el('div', { className: 'card' },
+    el('p', { className: 'hint' }, 'La lista de gastos se construye en T3.5.'),
+    el('button', { type: 'button', className: 'btn btn-primary spaced', onClick: () => openExpenseForm(state.trip) }, '+ Registrar gasto'));
+}
 
 // Orden de la barra inferior según el wireframe. hasAmounts: muestra el botón ₡ ⇄ $ (design.md §3).
 // needsTrip: sin viaje se muestra NoTripNotice. render: cada pantalla se conecta aquí en su tarea (T3.2 a T3.7).
 const SCREENS = [
   { id: 'home', label: 'Inicio', icon: 'home', title: 'Hoy', hasAmounts: true, needsTrip: true, task: 'T3.6' },
-  { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, needsTrip: true, task: 'T3.4 y T3.5' },
+  { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, needsTrip: true, render: ExpensesPending },
   { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, needsTrip: true, task: 'T3.7' },
   { id: 'categories', label: 'Categorías', icon: 'grid', title: 'Categorías', hasAmounts: true, needsTrip: true, render: CategoriesScreen },
   { id: 'trip', label: 'Viaje', icon: 'bag', title: 'Mi viaje', hasAmounts: true, needsTrip: false, render: TripScreen },
+];
+
+// Vistas dentro de una pestaña (no aparecen en la barra). Dibujan su propio encabezado.
+const SUB_SCREENS = [
+  { id: 'expense-form', parent: 'expenses', needsTrip: true, render: ExpenseForm },
 ];
 
 function NoTripNotice() {
@@ -53,12 +66,12 @@ function ScreenHeader(state, screen) {
     screen.hasAmounts && CurrencyToggle(state));
 }
 
-function BottomNav(state) {
+function BottomNav(activeTab) {
   return el('nav', { className: 'bottom-nav', 'aria-label': 'Navegación principal' },
     el('div', { className: 'bottom-nav-inner' },
       SCREENS.map((screen) => el('button', {
         type: 'button',
-        'aria-current': state.ui.currentScreen === screen.id ? 'page' : undefined,
+        'aria-current': activeTab === screen.id ? 'page' : undefined,
         onClick: () => setScreen(screen.id),
       }, icon(screen.icon), screen.label))));
 }
@@ -107,18 +120,18 @@ function LoadErrorScreen(state) {
 
 export function App(state) {
   const { ui } = state;
-  const screen = SCREENS.find((candidate) => candidate.id === ui.currentScreen) ?? SCREENS[0];
+  const screen = [...SCREENS, ...SUB_SCREENS].find((candidate) => candidate.id === ui.currentScreen) ?? SCREENS[0];
   const confirmProps = ui.pendingDelete && getConfirmProps(ui.pendingDelete);
 
   const content = ui.loadError
     ? LoadErrorScreen(state)
     : el('main', {},
-      ScreenHeader(state, screen),
+      !screen.parent && ScreenHeader(state, screen),
       ui.errors.converter && el('div', { className: 'alert-box', role: 'status' }, ui.errors.converter),
       ScreenContent(state, screen));
 
   return el('div', {},
     content,
-    !ui.loadError && BottomNav(state),
+    !ui.loadError && BottomNav(screen.parent ?? screen.id),
     confirmProps && ConfirmDialog({ ...confirmProps, onCancel: () => setPendingDelete(null) }));
 }

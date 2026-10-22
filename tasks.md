@@ -79,7 +79,7 @@
   - **REQ:** 002, 003, 016.
   - **Hecho cuando:** no deja asignar más que el total, y no deja borrar una categoría con gastos (muestra cuántos tiene).
 
-- [ ] **T3.4 Registrar y editar gasto: `components/ExpenseForm.js`** (wireframe 4)
+- [x] **T3.4 Registrar y editar gasto: `components/ExpenseForm.js`** (wireframe 4)
   - **Qué:** selector Previo / Durante, monto, categoría y fecha (con el rango válido debajo).
   - **REQ:** 005, 006, 011–015, 032, 033, 044.
   - **Hecho cuando:** un monto negativo o en cero muestra "El monto debe ser mayor a cero" y no se guarda.
