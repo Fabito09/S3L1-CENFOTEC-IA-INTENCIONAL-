@@ -64,7 +64,7 @@
 
 ## Fase 3: Pantallas (en el orden del flujo del usuario)
 
-- [ ] **T3.1 Estructura común: `components/App.js`, `components/ConfirmDialog.js`**
+- [x] **T3.1 Estructura común: `components/App.js`, `components/ConfirmDialog.js`**
   - **Qué:** `App` con `BottomNav` (Inicio, Gastos, Itinerario, Categorías, Viaje) y `CurrencyToggle`. `ConfirmDialog` reutilizable. Mensaje de datos dañados con opción "Empezar de cero".
   - **REQ:** 019, 047.
   - **Hecho cuando:** se navega entre las 5 pestañas, y el botón ₡ ⇄ $ muestra el aviso si no hay tipo de cambio.

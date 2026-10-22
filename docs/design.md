@@ -35,7 +35,8 @@ src/
     ├── ExpenseForm.js
     ├── ExpenseList.js
     ├── ItineraryScreen.js
-    └── ConfirmDialog.js
+    ├── ConfirmDialog.js
+    └── dom.js        # Ayudantes el() e icon() para construir la interfaz sin innerHTML
 ```
 
 Los subcomponentes (`FoodTodayCard`, `DaySelector`, etc.) son funciones dentro del archivo de su pantalla.
@@ -194,3 +195,4 @@ flowchart LR
 | 1.1 (Paso 3, Ronda 2) | Mapeo: funciones explícitas para reglas críticas (`calculateDailyFoodLimit`, `validateAmount`) y para REQ-009, REQ-023 y REQ-025; mapeo por REQ. |
 | 1.2 (S3L2, Paso 1) | Armonización: moneda por viaje, fija tras crear el viaje (`CurrencyPicker`, `formatMoney`, REQ-045, REQ-046); vista convertida con tipo de cambio manual (`CurrencyToggle`, `toDisplayMoney`, REQ-047, REQ-048); fecha de gastos previos (REQ-044); `isFoodCategory`, `getToday` y `sortDayItems`; notas sobre lo que el wireframe no muestra; UI de REQ-019 y REQ-025. |
 | 1.3 (S3L2, Paso 2) | Wireframe rehecho con la paleta "Tropical Costa Rica" (sección 3.1) y con moneda, tipo de cambio y botón ₡ ⇄ $; la pantalla Inicio ahora muestra un único estado coherente. |
+| 1.4 (S3L2, Paso 3) | Se agrega `components/dom.js` (ayudantes `el` e `icon`) al construir la estructura común en T3.1. |
