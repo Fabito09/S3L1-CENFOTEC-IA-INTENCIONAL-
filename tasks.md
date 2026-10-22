@@ -27,7 +27,7 @@
   - **REQ:** 001, 003, 004, 005, 006, 026, 027, 030, 034–037, 041, 045, 047.
   - **Hecho cuando:** pasa `tests/budget.test.js` (T1.3).
 
-- [ ] **T1.2 Validaciones: `src/validation.js`**
+- [x] **T1.2 Validaciones: `src/validation.js`**
   - **Funciones:** **`validateAmount`**, `validateRequired`, `validateTrip`, `validateCategory`, `validateExpense`, `validateItineraryItem`, `findRecordsOutsideRange`.
   - **REQ:** 001, 002, 003, 010–015, 024, 025, 042, 044, 048.
   - **Hecho cuando:** pasa `tests/validation.test.js` (T1.3).
