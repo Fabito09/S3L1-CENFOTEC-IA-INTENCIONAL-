@@ -9,7 +9,7 @@ App web de itinerarios y presupuesto de viajes. Solo navegador, sin servidor.
 | `docs/requirements.md` | Fuente oficial de las reglas (EARS, REQ-001 a REQ-048). |
 | `docs/data-contract.json` | Forma exacta de los datos guardados. |
 | `docs/design.md` | Módulos, funciones y mapeo REQ → código. |
-| `docs/wireframe.png` | Pantallas de referencia. |
+| `docs/wireframe.png` | Pantallas de referencia (se genera desde `docs/wireframe.html`). Paleta en `design.md` §3.1. |
 | `tasks.md` | Plan de implementación: qué hacer y en qué orden. |
 
 ## Lenguaje Ubicuo

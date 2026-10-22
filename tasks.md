@@ -1,6 +1,6 @@
 # tasks.md: Plan de implementación de NomadPulse
 
-**Insumos:** `docs/requirements.md` (v2.1), `docs/design.md` (v1.2), `docs/data-contract.json`, `docs/wireframe.png`, `CLAUDE.md`.
+**Insumos:** `docs/requirements.md` (v2.1), `docs/design.md` (v1.3), `docs/data-contract.json`, `docs/wireframe.png`, `CLAUDE.md`.
 **Orden:** de adentro hacia afuera. Primero la lógica pura (cálculos y validaciones), después el estado y el guardado, al final las pantallas.
 
 ## Reglas de ejecución
@@ -17,7 +17,7 @@
 
 - [ ] **T0.1 Estructura y arranque**
   - **Archivos:** `src/index.html`, `src/styles.css`, `src/main.js` (vacío por ahora).
-  - **Qué:** HTML con `<div id="app">` y `<script type="module" src="main.js">`. CSS base con los colores y la tipografía del wireframe (verde azulado, tarjetas redondeadas, formato móvil).
+  - **Qué:** HTML con `<div id="app">` y `<script type="module" src="main.js">`. CSS base con la paleta "Tropical Costa Rica" de `design.md` §3.1 (variables `--bg`, `--primary`, `--accent`, `--alert`…), tarjetas redondeadas, botones tipo píldora y formato móvil.
   - **Hecho cuando:** `npx serve src` abre la página en el navegador sin errores en la consola.
 
 ## Fase 1: Lógica de negocio pura (sin interfaz)

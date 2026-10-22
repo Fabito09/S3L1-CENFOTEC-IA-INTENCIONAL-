@@ -1,6 +1,6 @@
 # Diseño Técnico: NomadPulse Travel Assistant
 
-**Versión:** 1.2 (S3L2, Paso 1: armonización)
+**Versión:** 1.3 (S3L2: armonización y paleta)
 **Insumos:** `requirements.md`, `data-contract.json`, `wireframe.png`, `CLAUDE.md`
 
 ---
@@ -54,13 +54,28 @@ Los subcomponentes (`FoodTodayCard`, `DaySelector`, etc.) son funciones dentro d
 | 5. Lista de gastos | `ExpenseList` | `ExpenseFilter`, `ConfirmDialog` |
 | 6. Itinerario | `ItineraryScreen` | `DaySelector`, `ItineraryList`, `ItineraryForm` |
 
-**Notas de armonización con el wireframe** (lo que la imagen no muestra o simplifica):
-- **Inicio:** el boceto muestra a la vez el disponible positivo (₡3 000) y la alerta de límite superado (−₡2 000) solo para ilustrar ambos estados. En la app, `OverLimitAlert` aparece únicamente si `availableToday < 0`. (REQ-007, REQ-031, REQ-039)
-- **Viaje:** se agrega `CurrencyPicker` (₡ / $), que no aparece en el boceto. Solo se puede elegir al crear el viaje; al editar se muestra como solo lectura. (REQ-045, REQ-046) También se agrega el campo opcional "Tipo de cambio (₡ por $1)". (REQ-048)
-- **Todas las pantallas:** `CurrencyToggle` es un botón en la parte superior (no aparece en el boceto) que activa o desactiva la vista convertida. Los formularios siguen pidiendo montos en la moneda del viaje. (REQ-047) Si el cambio de fechas se bloquea, la lista de registros afectados se muestra en esta misma pantalla. (REQ-025)
+**Detalles de comportamiento** (el wireframe ya muestra moneda, tipo de cambio y botón ₡ ⇄ $; esto es lo que una imagen no puede mostrar):
+- **Inicio:** el boceto muestra el estado de límite superado (−₡2 000). `OverLimitAlert` aparece únicamente si `availableToday < 0` y desaparece al volver a ≥ 0. (REQ-007, REQ-031, REQ-039)
+- **Viaje:** `CurrencyPicker` solo se puede usar al crear el viaje; al editar se muestra como solo lectura. (REQ-045, REQ-046) Si un cambio de fechas se bloquea, la lista de registros afectados se muestra en esta pantalla. (REQ-025)
+- **`CurrencyToggle` (₡ ⇄ $):** está arriba a la derecha en las pantallas con montos (Viaje, Categorías, Inicio, Gastos). Los formularios siempre piden montos en la moneda del viaje. (REQ-047)
 - **Registrar gasto:** con "Previo al viaje", la fecha debe ser anterior al inicio del viaje. (REQ-044)
 - **Itinerario:** tocar una actividad la carga en `ItineraryForm` para editarla, igual que `ExpenseForm` con los gastos. (REQ-042)
 - **Datos dañados:** si `loadState` falla, `App` muestra el error y un `ConfirmDialog` para empezar de cero; solo al confirmar se sobrescribe LocalStorage. (REQ-019)
+
+### 3.1 Paleta "Tropical Costa Rica"
+
+Variables CSS en `styles.css` (fuente: `docs/wireframe.html`). Estilo: fondo cálido, tarjetas blancas redondeadas y botones tipo píldora.
+
+| Variable | Color | Uso |
+|---|---|---|
+| `--bg` | `#F6F1E7` arena | Fondo de las pantallas |
+| `--card` | `#FFFFFF` | Tarjetas y campos |
+| `--primary` | `#1F4D3A` verde selva | Botones, navegación activa, tarjeta de comida |
+| `--accent` | `#F2994A` naranja atardecer | Barras de progreso, montos por asignar |
+| `--alert` | `#C2410C` terracota | Errores, límite superado, eliminar |
+| `--text` | `#1E2A24` | Texto principal |
+| `--muted` | `#6E746C` | Texto secundario |
+| `--border` | `#E7DFD1` | Bordes |
 
 ---
 
@@ -178,3 +193,4 @@ flowchart LR
 | 1.1 (Paso 3, Ronda 1) | Poda: se eliminan `router.js`, `eventBus.js` y `models/` (6 archivos). |
 | 1.1 (Paso 3, Ronda 2) | Mapeo: funciones explícitas para reglas críticas (`calculateDailyFoodLimit`, `validateAmount`) y para REQ-009, REQ-023 y REQ-025; mapeo por REQ. |
 | 1.2 (S3L2, Paso 1) | Armonización: moneda por viaje, fija tras crear el viaje (`CurrencyPicker`, `formatMoney`, REQ-045, REQ-046); vista convertida con tipo de cambio manual (`CurrencyToggle`, `toDisplayMoney`, REQ-047, REQ-048); fecha de gastos previos (REQ-044); `isFoodCategory`, `getToday` y `sortDayItems`; notas sobre lo que el wireframe no muestra; UI de REQ-019 y REQ-025. |
+| 1.3 (S3L2, Paso 2) | Wireframe rehecho con la paleta "Tropical Costa Rica" (sección 3.1) y con moneda, tipo de cambio y botón ₡ ⇄ $; la pantalla Inicio ahora muestra un único estado coherente. |
