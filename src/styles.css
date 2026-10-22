@@ -322,3 +322,9 @@ body {
 .item-time.note { margin: 0; color: var(--muted); }
 .dot { width: 9px; height: 9px; flex-shrink: 0; border-radius: 50%; background: var(--accent); }
 .dot-empty { background: var(--card); border: 2px solid var(--muted); }
+
+/* Recordatorio de hoy (wireframe 3) */
+.reminder { padding: 12px 14px; }
+.reminder-title { font-size: 14px; }
+.reminder .note { margin-top: 0; }
+.close-button { font: inherit; color: var(--muted); background: none; border: 0; padding: 6px; cursor: pointer; }

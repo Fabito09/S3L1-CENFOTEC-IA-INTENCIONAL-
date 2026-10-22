@@ -101,7 +101,7 @@
 
 ## Fase 4: Recordatorio diario
 
-- [ ] **T4.1 Recordatorio: `src/reminder.js` y `ReminderBanner` en Inicio**
+- [x] **T4.1 Recordatorio: `src/reminder.js` y `ReminderBanner` en Inicio**
   - **Funciones:** `shouldShowReminder` (clave `nomadpulse.lastReminder`), `scheduleMorningNotification` (08:00, solo con la app abierta y con permiso; sin Service Worker).
   - **REQ:** 008, 009.
   - **Hecho cuando:** el banner aparece la primera vez que se abre la app en un día del viaje y no vuelve a salir ese mismo día.

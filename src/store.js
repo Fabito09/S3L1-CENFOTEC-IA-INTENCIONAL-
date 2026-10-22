@@ -21,6 +21,7 @@ function createEmptyUi() {
     pendingDelete: null,
     showConverted: false,
     loadError: null,
+    showReminder: false,
   };
 }
 
@@ -278,6 +279,11 @@ export function setPendingDelete(pendingDelete) {
 
 export function clearErrors() {
   setUi({ errors: {} });
+}
+
+// REQ-008: muestra u oculta el ReminderBanner durante la sesión.
+export function setReminderVisible(showReminder) {
+  setUi({ showReminder });
 }
 
 // REQ-047: alterna la vista convertida; sin tipo de cambio avisa dónde ingresarlo.

@@ -10,12 +10,45 @@ import {
   getTotalDays,
   toDisplayMoney,
 } from '../budget.js';
-import { setScreen } from '../store.js';
+import { clearErrors, setReminderVisible, setScreen } from '../store.js';
+import { scheduleMorningNotification } from '../reminder.js';
 import { openExpenseForm } from './ExpenseForm.js';
 
 // "sábado 17 de octubre" a partir de YYYY-MM-DD.
 function describeDate(isoDate) {
   return `${formatWeekday(isoDate)} ${Number(isoDate.slice(8))} de ${formatMonth(isoDate)}`;
+}
+
+// REQ-008: recordatorio de la primera apertura del día, con el disponible de hoy (REQ-034).
+function ReminderBanner(foodLimit, money) {
+  const { availableToday } = foodLimit;
+  const message = availableToday >= 0
+    ? `Tenés ${money(availableToday)} para comida hoy.`
+    : `Hoy ya superaste el límite de comida por ${money(-availableToday)}.`;
+  return el('div', { className: 'card row reminder', role: 'status' },
+    el('span', { className: 'icon-box icon-box-accent', 'aria-hidden': 'true' }, '!'),
+    el('div', { className: 'grow' },
+      el('strong', { className: 'reminder-title' }, 'Recordatorio de hoy'),
+      el('p', { className: 'note' }, message)),
+    el('button', {
+      type: 'button',
+      className: 'close-button',
+      'aria-label': 'Cerrar recordatorio',
+      onClick: () => setReminderVisible(false),
+    }, '✕'));
+}
+
+// REQ-009: el navegador solo da permiso de notificaciones tras un clic del usuario.
+function NotificationOffer() {
+  if (!('Notification' in globalThis) || Notification.permission !== 'default') return null;
+  return el('button', {
+    type: 'button',
+    className: 'btn btn-ghost spaced',
+    onClick: () => Notification.requestPermission().then(() => {
+      scheduleMorningNotification();
+      clearErrors();
+    }),
+  }, 'Activar aviso diario a las 08:00');
 }
 
 // REQ-040: fuera del rango del viaje no se muestra el disponible de hoy.
@@ -89,8 +122,10 @@ export function HomeScreen(state) {
 
   return el('div', {},
     el('p', { className: 'hint' }, dayText),
+    ui.showReminder && isTripDay && foodLimit && ReminderBanner(foodLimit, money),
     foodSection,
     isTripDay && foodLimit?.isOverLimit && OverLimitAlert(),
     BudgetProgress(state, money),
-    el('button', { type: 'button', className: 'btn btn-primary spaced', onClick: () => openExpenseForm(trip, null, 'home') }, '+ Registrar gasto'));
+    el('button', { type: 'button', className: 'btn btn-primary spaced', onClick: () => openExpenseForm(trip, null, 'home') }, '+ Registrar gasto'),
+    NotificationOffer());
 }
