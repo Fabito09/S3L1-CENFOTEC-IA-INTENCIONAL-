@@ -1,7 +1,7 @@
 // Pantalla Categorías (wireframe 2): repartir el presupuesto total.
 // REQ-002, REQ-003, REQ-016, REQ-047
 
-import { el, icon, InputField } from './dom.js';
+import { el, icon, InputField, CategoryBadge } from './dom.js';
 import { getUnassignedAmount, isFoodCategory, toDisplayMoney } from '../budget.js';
 import { addCategory, updateCategory, deleteCategory, clearErrors } from '../store.js';
 
@@ -18,11 +18,6 @@ function createDraft(tripId, category = null) {
     name: category?.name ?? '',
     amount: category ? String(category.amount) : '',
   };
-}
-
-function initials(name) {
-  const letters = name.trim().slice(0, 2);
-  return letters.charAt(0).toUpperCase() + letters.slice(1).toLowerCase();
 }
 
 // REQ-003: Total / Asignado / Por asignar y la barra de reparto.
@@ -67,7 +62,7 @@ function CategoryList(state) {
           clearErrors();
         },
       },
-      el('span', { className: isFoodCategory(category) ? 'icon-box icon-box-accent' : 'icon-box icon-box-primary' }, initials(category.name)),
+      CategoryBadge(category.name, isFoodCategory(category)),
       el('span', { className: 'grow' }, category.name),
       el('span', { className: 'amount' }, toDisplayMoney(category.amount, trip, ui.showConverted))),
       el('button', {

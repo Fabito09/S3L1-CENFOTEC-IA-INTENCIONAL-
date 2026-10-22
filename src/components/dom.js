@@ -49,6 +49,13 @@ export function InputField({ id, label, value, error, type = 'text', onInput, ex
     FieldError(error));
 }
 
+// Caja con las dos primeras letras de la categoría; Comida en naranja, el resto en verde (wireframe 2 y 5).
+export function CategoryBadge(name, isFood) {
+  const letters = name.trim().slice(0, 2);
+  const text = letters.charAt(0).toUpperCase() + letters.slice(1).toLowerCase();
+  return el('span', { className: isFood ? 'icon-box icon-box-accent' : 'icon-box icon-box-primary' }, text);
+}
+
 // YYYY-MM-DD → DD/MM/YYYY, como en el wireframe.
 export function formatDate(isoDate) {
   const [year, month, day] = isoDate.split('-');

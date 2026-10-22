@@ -1,24 +1,19 @@
 // Estructura común: encabezado, CurrencyToggle, pantalla actual, BottomNav y ConfirmDialog (design.md §3).
 
-import { el, icon } from './dom.js';
+import { el, icon, formatDate } from './dom.js';
 import { ConfirmDialog } from './ConfirmDialog.js';
 import { TripScreen } from './TripScreen.js';
 import { CategoriesScreen } from './CategoriesScreen.js';
-import { ExpenseForm, openExpenseForm } from './ExpenseForm.js';
-import { deleteTrip, resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
-
-// Provisional hasta T3.5 (ExpenseList): solo permite abrir el formulario.
-function ExpensesPending(state) {
-  return el('div', { className: 'card' },
-    el('p', { className: 'hint' }, 'La lista de gastos se construye en T3.5.'),
-    el('button', { type: 'button', className: 'btn btn-primary spaced', onClick: () => openExpenseForm(state.trip) }, '+ Registrar gasto'));
-}
+import { ExpenseForm } from './ExpenseForm.js';
+import { ExpenseList } from './ExpenseList.js';
+import { toDisplayMoney } from '../budget.js';
+import { deleteExpense, deleteTrip, resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
 
 // Orden de la barra inferior según el wireframe. hasAmounts: muestra el botón ₡ ⇄ $ (design.md §3).
 // needsTrip: sin viaje se muestra NoTripNotice. render: cada pantalla se conecta aquí en su tarea (T3.2 a T3.7).
 const SCREENS = [
   { id: 'home', label: 'Inicio', icon: 'home', title: 'Hoy', hasAmounts: true, needsTrip: true, task: 'T3.6' },
-  { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, needsTrip: true, render: ExpensesPending },
+  { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, needsTrip: true, render: ExpenseList },
   { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, needsTrip: true, task: 'T3.7' },
   { id: 'categories', label: 'Categorías', icon: 'grid', title: 'Categorías', hasAmounts: true, needsTrip: true, render: CategoriesScreen },
   { id: 'trip', label: 'Viaje', icon: 'bag', title: 'Mi viaje', hasAmounts: true, needsTrip: false, render: TripScreen },
@@ -77,7 +72,7 @@ function BottomNav(activeTab) {
 }
 
 // Textos del ConfirmDialog según lo que se va a borrar; cada pantalla agrega su caso en su tarea.
-function getConfirmProps(pendingDelete) {
+function getConfirmProps(pendingDelete, state) {
   if (pendingDelete.kind === 'reset') {
     return {
       title: '¿Empezar de cero?',
@@ -97,6 +92,21 @@ function getConfirmProps(pendingDelete) {
       onConfirm: () => {
         setPendingDelete(null);
         deleteTrip();
+      },
+    };
+  }
+  if (pendingDelete.kind === 'expense') {
+    const expense = state.expenses.find((candidate) => candidate.id === pendingDelete.id);
+    if (!expense) return null;
+    const categoryName = state.categories.find((category) => category.id === expense.categoryId)?.name ?? 'Sin categoría';
+    const amount = toDisplayMoney(expense.amount, state.trip, state.ui.showConverted);
+    return {
+      title: '¿Eliminar este gasto?',
+      message: `${categoryName} · ${formatDate(expense.date)} · ${amount}. El monto volverá a tu presupuesto disponible.`,
+      confirmLabel: 'Eliminar',
+      onConfirm: () => {
+        setPendingDelete(null);
+        deleteExpense(expense.id);
       },
     };
   }
@@ -121,7 +131,7 @@ function LoadErrorScreen(state) {
 export function App(state) {
   const { ui } = state;
   const screen = [...SCREENS, ...SUB_SCREENS].find((candidate) => candidate.id === ui.currentScreen) ?? SCREENS[0];
-  const confirmProps = ui.pendingDelete && getConfirmProps(ui.pendingDelete);
+  const confirmProps = ui.pendingDelete && getConfirmProps(ui.pendingDelete, state);
 
   const content = ui.loadError
     ? LoadErrorScreen(state)

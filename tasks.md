@@ -84,7 +84,7 @@
   - **REQ:** 005, 006, 011–015, 032, 033, 044.
   - **Hecho cuando:** un monto negativo o en cero muestra "El monto debe ser mayor a cero" y no se guarda.
 
-- [ ] **T3.5 Lista de gastos: `components/ExpenseList.js`** (wireframe 5)
+- [x] **T3.5 Lista de gastos: `components/ExpenseList.js`** (wireframe 5)
   - **Qué:** filtro Todos / Previos / Durante, total gastado, eliminar con confirmación y tocar un gasto para editarlo.
   - **REQ:** 029, 030.
   - **Hecho cuando:** al eliminar un gasto, el monto vuelve al disponible.
