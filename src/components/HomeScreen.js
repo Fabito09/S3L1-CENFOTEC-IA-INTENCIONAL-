@@ -1,7 +1,7 @@
 // Pantalla Inicio (wireframe 3): disponible de comida de hoy y presupuesto del viaje.
 // REQ-007, REQ-031, REQ-034 a REQ-041, REQ-047
 
-import { el, formatDate } from './dom.js';
+import { el, formatDate, formatMonth, formatWeekday } from './dom.js';
 import {
   calculateDailyFoodLimit,
   getFoodBudget,
@@ -13,13 +13,9 @@ import {
 import { setScreen } from '../store.js';
 import { openExpenseForm } from './ExpenseForm.js';
 
-// "sábado 17 de octubre" a partir de YYYY-MM-DD (fecha local).
+// "sábado 17 de octubre" a partir de YYYY-MM-DD.
 function describeDate(isoDate) {
-  const [year, month, day] = isoDate.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  const weekday = date.toLocaleDateString('es-CR', { weekday: 'long' });
-  const monthName = date.toLocaleDateString('es-CR', { month: 'long' });
-  return `${weekday} ${day} de ${monthName}`;
+  return `${formatWeekday(isoDate)} ${Number(isoDate.slice(8))} de ${formatMonth(isoDate)}`;
 }
 
 // REQ-040: fuera del rango del viaje no se muestra el disponible de hoy.

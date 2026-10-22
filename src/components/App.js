@@ -7,15 +7,24 @@ import { CategoriesScreen } from './CategoriesScreen.js';
 import { ExpenseForm } from './ExpenseForm.js';
 import { ExpenseList } from './ExpenseList.js';
 import { HomeScreen } from './HomeScreen.js';
+import { ItineraryScreen } from './ItineraryScreen.js';
 import { toDisplayMoney } from '../budget.js';
-import { deleteExpense, deleteTrip, resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
+import {
+  deleteExpense,
+  deleteItineraryItem,
+  deleteTrip,
+  resetData,
+  setPendingDelete,
+  setScreen,
+  toggleConverted,
+} from '../store.js';
 
 // Orden de la barra inferior según el wireframe. hasAmounts: muestra el botón ₡ ⇄ $ (design.md §3).
-// needsTrip: sin viaje se muestra NoTripNotice. render: cada pantalla se conecta aquí en su tarea (T3.2 a T3.7).
+// needsTrip: sin viaje se muestra NoTripNotice en lugar de la pantalla.
 const SCREENS = [
   { id: 'home', label: 'Inicio', icon: 'home', title: 'Hoy', hasAmounts: true, needsTrip: true, render: HomeScreen },
   { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, needsTrip: true, render: ExpenseList },
-  { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, needsTrip: true, task: 'T3.7' },
+  { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, needsTrip: true, render: ItineraryScreen },
   { id: 'categories', label: 'Categorías', icon: 'grid', title: 'Categorías', hasAmounts: true, needsTrip: true, render: CategoriesScreen },
   { id: 'trip', label: 'Viaje', icon: 'bag', title: 'Mi viaje', hasAmounts: true, needsTrip: false, render: TripScreen },
 ];
@@ -33,13 +42,7 @@ function NoTripNotice() {
 
 function ScreenContent(state, screen) {
   if (screen.needsTrip && !state.trip) return NoTripNotice();
-  return screen.render ? screen.render(state) : PendingScreen(screen);
-}
-
-// Aviso provisional para las pantallas que aún no se construyen.
-function PendingScreen(screen) {
-  return el('div', { className: 'card' },
-    el('p', { className: 'hint' }, `Esta pantalla se construye en ${screen.task}.`));
+  return screen.render(state);
 }
 
 // REQ-047: alterna la vista convertida ₡ ⇄ $; sin tipo de cambio, el store deja el aviso en ui.errors.converter.
@@ -72,7 +75,7 @@ function BottomNav(activeTab) {
       }, icon(screen.icon), screen.label))));
 }
 
-// Textos del ConfirmDialog según lo que se va a borrar; cada pantalla agrega su caso en su tarea.
+// Textos del ConfirmDialog según lo que se va a borrar o sobrescribir.
 function getConfirmProps(pendingDelete, state) {
   if (pendingDelete.kind === 'reset') {
     return {
@@ -108,6 +111,19 @@ function getConfirmProps(pendingDelete, state) {
       onConfirm: () => {
         setPendingDelete(null);
         deleteExpense(expense.id);
+      },
+    };
+  }
+  if (pendingDelete.kind === 'itinerary') {
+    const item = state.itinerary.find((candidate) => candidate.id === pendingDelete.id);
+    if (!item) return null;
+    return {
+      title: '¿Eliminar esta actividad?',
+      message: `${item.description} · ${formatDate(item.date)}${item.time ? ` · ${item.time}` : ''}. Se quitará del itinerario.`,
+      confirmLabel: 'Eliminar',
+      onConfirm: () => {
+        setPendingDelete(null);
+        deleteItineraryItem(item.id);
       },
     };
   }

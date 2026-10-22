@@ -94,7 +94,7 @@
   - **REQ:** 007, 031, 034–041.
   - **Hecho cuando:** al registrar un gasto de Comida hoy, el disponible se recalcula al volver a Inicio.
 
-- [ ] **T3.7 Pantalla Itinerario: `components/ItineraryScreen.js`** (wireframe 6)
+- [x] **T3.7 Pantalla Itinerario: `components/ItineraryScreen.js`** (wireframe 6)
   - **Qué:** `DaySelector`, lista del día ordenada con `sortDayItems`, agregar, editar (tocar la actividad) y eliminar con confirmación. Sin sugerencias de ningún tipo.
   - **REQ:** 010, 020, 021, 042, 043.
   - **Hecho cuando:** las actividades sin hora aparecen al final del día, en orden de ingreso.

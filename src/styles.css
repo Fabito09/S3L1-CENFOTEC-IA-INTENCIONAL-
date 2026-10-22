@@ -300,3 +300,25 @@ body {
 .percent-used { color: var(--primary); font-weight: 700; font-size: 13px; }
 .spaced-small { margin: 8px 0; }
 .strong-text { color: var(--text); }
+
+/* Itinerario (wireframe 6) */
+.day-selector { display: flex; gap: 8px; margin-top: 14px; overflow-x: auto; padding-bottom: 2px; }
+.day {
+  flex: 1 0 56px;
+  font: inherit;
+  color: var(--text);
+  text-align: center;
+  background: var(--card);
+  border: 0;
+  border-radius: 16px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+.day small { display: block; font-size: 11px; color: var(--muted); }
+.day strong { font-size: 19px; }
+.day[aria-pressed="true"] { color: #fff; background: var(--primary); }
+.day[aria-pressed="true"] small { color: #CFE0D6; }
+.item-time { width: 48px; flex-shrink: 0; color: var(--primary); }
+.item-time.note { margin: 0; color: var(--muted); }
+.dot { width: 9px; height: 9px; flex-shrink: 0; border-radius: 50%; background: var(--accent); }
+.dot-empty { background: var(--card); border: 2px solid var(--muted); }

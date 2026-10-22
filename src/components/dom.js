@@ -62,6 +62,22 @@ export function formatDate(isoDate) {
   return `${day}/${month}/${year}`;
 }
 
+// Fecha local (no UTC) para que el nombre del día no se corra según la zona horaria.
+function toLocalDate(isoDate) {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+// "sábado" o "sáb" (sin el punto que agrega el navegador).
+export function formatWeekday(isoDate, style = 'long') {
+  return toLocalDate(isoDate).toLocaleDateString('es-CR', { weekday: style }).replace('.', '');
+}
+
+// "octubre"
+export function formatMonth(isoDate) {
+  return toLocalDate(isoDate).toLocaleDateString('es-CR', { month: 'long' });
+}
+
 export function icon(name, size = 22) {
   const svg = document.createElementNS(SVG_NS, 'svg');
   svg.setAttribute('viewBox', '0 0 24 24');
