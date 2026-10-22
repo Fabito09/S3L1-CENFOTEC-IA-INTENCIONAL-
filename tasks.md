@@ -32,7 +32,7 @@
   - **REQ:** 001, 002, 003, 010–015, 024, 025, 042, 044, 048.
   - **Hecho cuando:** pasa `tests/validation.test.js` (T1.3).
 
-- [ ] **T1.3 Pruebas de las reglas críticas: `tests/`**
+- [x] **T1.3 Pruebas de las reglas críticas: `tests/`**
   - **Archivos:** `tests/budget.test.js`, `tests/validation.test.js`. Usan el runner que trae Node (`node --test`), sin librerías.
   - **Casos mínimos:**
     - Comida: presupuesto ₡50 000, 5 días y ₡7 000 gastados hoy dan disponible ₡3 000; con ₡12 000 gastados da −₡2 000 y `isOverLimit = true`.
@@ -42,7 +42,7 @@
     - Gasto previo con fecha igual o posterior al inicio se rechaza (REQ-044).
     - "comida" y " COMIDA " se reconocen como la categoría Comida (REQ-002, REQ-041).
     - `toDisplayMoney`: ₡5 000 con tipo de cambio 500 se muestra como $10 (REQ-047).
-  - **Hecho cuando:** `node --test tests/` termina en verde.
+  - **Hecho cuando:** `node --test tests/*.test.js` termina en verde.
 
 ## Fase 2: Estado y persistencia
 
@@ -112,7 +112,7 @@
   1. **Persistencia:** crear datos, presionar F5 y comprobar que no se pierde nada.
   2. **Restricción semántica:** intentar registrar un gasto de `-500` y comprobar que se rechaza.
   3. **Lógica dinámica:** registrar un gasto de Comida hoy y comprobar que el disponible se recalcula con `(Total Comida / Días Totales) − Acumulado del Día`.
-  - **Hecho cuando:** las 3 pasan y además `node --test tests/` está en verde.
+  - **Hecho cuando:** las 3 pasan y además `node --test tests/*.test.js` está en verde.
 
 - [ ] **T5.2 Documentación de cierre**
   - **Archivos:** `README.md` (agregar cómo ejecutar la app y las pruebas) y `docs/retrospectiva.md` (las 3 preguntas de la guía S3L2).

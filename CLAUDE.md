@@ -44,4 +44,4 @@ App web de itinerarios y presupuesto de viajes. Solo navegador, sin servidor.
 
 - **Seguir `tasks.md`:** una tarea a la vez y en orden. Al terminarla, marcarla `[x]`, mostrar qué cambió y esperar revisión antes de seguir.
 - **Unchanged Behavior:** al corregir un error o ajustar la interfaz, mantener intacta la lógica de negocio que ya funciona (`budget.js`, `validation.js`, reglas del `store.js`). Cambiar solo lo que se pidió y decir qué quedó igual.
-- **Verificar antes de cerrar:** correr `node --test tests/` después de tocar lógica de negocio.
+- **Verificar antes de cerrar:** correr `node --test tests/*.test.js` después de tocar lógica de negocio.
