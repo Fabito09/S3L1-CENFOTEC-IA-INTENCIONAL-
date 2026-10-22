@@ -51,7 +51,7 @@
   - **REQ:** 017, 018, 019, 022.
   - **Hecho cuando:** guardar, recargar con F5 y cargar devuelve el mismo estado; con un JSON dañado en LocalStorage, los datos originales siguen ahí.
 
-- [ ] **T2.2 Estado global y acciones: `src/store.js`**
+- [x] **T2.2 Estado global y acciones: `src/store.js`**
   - **Funciones:** `getState`, `subscribe` y las acciones `createTrip`, `updateTrip`, `deleteTrip`, `addCategory`, `updateCategory`, `deleteCategory`, `addExpense`, `updateExpense`, `deleteExpense`, `addItineraryItem`, `updateItineraryItem`, `deleteItineraryItem`, más las acciones de `ui` (pantalla actual, día seleccionado, filtro, `showConverted`).
   - **Regla de cada acción:** validar → modificar → `saveState()` → avisar a los suscriptores.
   - **Reglas especiales:** `addExpense` y `updateExpense` no bloquean por presupuesto (REQ-023); `deleteCategory` se bloquea si hay gastos (REQ-016); `updateTrip` nunca cambia `currency` (REQ-046); `deleteTrip` borra en cascada (REQ-028).
