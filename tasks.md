@@ -74,7 +74,7 @@
   - **REQ:** 001, 013, 024–028, 045, 046, 048.
   - **Hecho cuando:** fin antes de inicio muestra el error del wireframe; al editar, la moneda no se puede cambiar.
 
-- [ ] **T3.3 Pantalla Categorías: `components/CategoriesScreen.js`** (wireframe 2)
+- [x] **T3.3 Pantalla Categorías: `components/CategoriesScreen.js`** (wireframe 2)
   - **Qué:** resumen Total / Asignado / Por asignar, lista y formulario de nueva categoría.
   - **REQ:** 002, 003, 016.
   - **Hecho cuando:** no deja asignar más que el total, y no deja borrar una categoría con gastos (muestra cuántos tiene).

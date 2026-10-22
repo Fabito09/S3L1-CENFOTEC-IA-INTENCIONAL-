@@ -40,6 +40,15 @@ export function FieldError(message) {
   return message ? el('p', { className: 'error-text', role: 'alert' }, `⚠ ${message}`) : null;
 }
 
+// Campo de formulario con etiqueta, borde de error y mensaje (wireframe 1 y 2).
+// extra: atributos adicionales del input (placeholder, inputMode, step...).
+export function InputField({ id, label, value, error, type = 'text', onInput, extra = {} }) {
+  return el('div', {},
+    el('label', { className: 'field-label', htmlFor: id }, label),
+    el('input', { id, className: error ? 'input error' : 'input', type, value, onInput, ...extra }),
+    FieldError(error));
+}
+
 // YYYY-MM-DD → DD/MM/YYYY, como en el wireframe.
 export function formatDate(isoDate) {
   const [year, month, day] = isoDate.split('-');

@@ -188,3 +188,47 @@ body {
 /* Registros que bloquean un cambio de fechas (REQ-025) */
 .affected-list { margin: 8px 0 0 18px; color: var(--text); }
 .affected-list li { margin-top: 3px; }
+
+/* Resumen Total / Asignado / Por asignar (pantalla Categorías) */
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.summary-grid span:nth-child(2) { text-align: center; }
+.summary-grid span:nth-child(3) { text-align: right; }
+.summary-labels { font-size: 12px; color: var(--muted); }
+.summary-values { font-weight: 800; font-size: 16px; margin: 2px 0 10px; }
+.accent-text { color: var(--accent); }
+.card-title { font-size: 16px; font-weight: 700; }
+.two-wide-first { grid-template-columns: 1.4fr 1fr; }
+
+/* Listas tocables (categorías, gastos, actividades) */
+.list-card { padding: 4px 16px; }
+.list-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #F0EADF; }
+.list-item:last-child { border-bottom: 0; }
+.list-item-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.grow { flex: 1; }
+.amount { font-weight: 700; font-size: 15px; }
+.icon-box-accent { background: var(--accent-soft); color: var(--accent); }
+.icon-box-primary { background: var(--primary-soft); color: var(--primary); }
+.trash-button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: #F5F0E7;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.trash-button:hover { color: var(--alert); background: var(--alert-soft); }

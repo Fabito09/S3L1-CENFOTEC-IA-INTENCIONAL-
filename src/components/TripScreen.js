@@ -1,7 +1,7 @@
 // Pantalla Viaje (wireframe 1): crear y editar el viaje.
 // REQ-001, REQ-013, REQ-024 a REQ-028, REQ-045, REQ-046, REQ-048
 
-import { el, FieldError, formatDate } from './dom.js';
+import { el, FieldError, InputField, formatDate } from './dom.js';
 import { getTotalDays } from '../budget.js';
 import { createTrip, updateTrip, setPendingDelete, setScreen, clearErrors } from '../store.js';
 
@@ -33,22 +33,19 @@ function describeTotalDays() {
   return String(getTotalDays(draft));
 }
 
-function TextField({ label, field, errors, errorKey = field, type = 'text', extra = {}, onInput }) {
-  const message = errors[errorKey];
-  return el('div', {},
-    el('label', { className: 'field-label', htmlFor: `trip-${field}` }, label),
-    el('input', {
-      id: `trip-${field}`,
-      className: message ? 'input error' : 'input',
-      type,
-      value: draft[field],
-      onInput: (event) => {
-        draft[field] = event.target.value;
-        if (onInput) onInput();
-      },
-      ...extra,
-    }),
-    FieldError(message));
+function TextField({ label, field, errors, type, extra, onInput }) {
+  return InputField({
+    id: `trip-${field}`,
+    label,
+    value: draft[field],
+    error: errors[field],
+    type,
+    extra,
+    onInput: (event) => {
+      draft[field] = event.target.value;
+      if (onInput) onInput();
+    },
+  });
 }
 
 // REQ-045, REQ-046: la moneda se elige solo al crear; al editar se muestra como solo lectura.

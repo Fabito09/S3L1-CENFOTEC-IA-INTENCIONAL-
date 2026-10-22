@@ -3,17 +3,29 @@
 import { el, icon } from './dom.js';
 import { ConfirmDialog } from './ConfirmDialog.js';
 import { TripScreen } from './TripScreen.js';
+import { CategoriesScreen } from './CategoriesScreen.js';
 import { deleteTrip, resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
 
 // Orden de la barra inferior según el wireframe. hasAmounts: muestra el botón ₡ ⇄ $ (design.md §3).
-// render: cada pantalla se conecta aquí en su tarea (T3.2 a T3.7).
+// needsTrip: sin viaje se muestra NoTripNotice. render: cada pantalla se conecta aquí en su tarea (T3.2 a T3.7).
 const SCREENS = [
-  { id: 'home', label: 'Inicio', icon: 'home', title: 'Hoy', hasAmounts: true, task: 'T3.6' },
-  { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, task: 'T3.4 y T3.5' },
-  { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, task: 'T3.7' },
-  { id: 'categories', label: 'Categorías', icon: 'grid', title: 'Categorías', hasAmounts: true, task: 'T3.3' },
-  { id: 'trip', label: 'Viaje', icon: 'bag', title: 'Mi viaje', hasAmounts: true, render: TripScreen },
+  { id: 'home', label: 'Inicio', icon: 'home', title: 'Hoy', hasAmounts: true, needsTrip: true, task: 'T3.6' },
+  { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, needsTrip: true, task: 'T3.4 y T3.5' },
+  { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, needsTrip: true, task: 'T3.7' },
+  { id: 'categories', label: 'Categorías', icon: 'grid', title: 'Categorías', hasAmounts: true, needsTrip: true, render: CategoriesScreen },
+  { id: 'trip', label: 'Viaje', icon: 'bag', title: 'Mi viaje', hasAmounts: true, needsTrip: false, render: TripScreen },
 ];
+
+function NoTripNotice() {
+  return el('div', { className: 'card' },
+    el('p', { className: 'hint' }, 'Todavía no hay un viaje. Crealo primero para usar esta pantalla.'),
+    el('button', { type: 'button', className: 'btn btn-primary spaced', onClick: () => setScreen('trip') }, 'Crear mi viaje'));
+}
+
+function ScreenContent(state, screen) {
+  if (screen.needsTrip && !state.trip) return NoTripNotice();
+  return screen.render ? screen.render(state) : PendingScreen(screen);
+}
 
 // Aviso provisional para las pantallas que aún no se construyen.
 function PendingScreen(screen) {
@@ -103,7 +115,7 @@ export function App(state) {
     : el('main', {},
       ScreenHeader(state, screen),
       ui.errors.converter && el('div', { className: 'alert-box', role: 'status' }, ui.errors.converter),
-      screen.render ? screen.render(state) : PendingScreen(screen));
+      ScreenContent(state, screen));
 
   return el('div', {},
     content,
