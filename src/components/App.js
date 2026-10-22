@@ -6,13 +6,14 @@ import { TripScreen } from './TripScreen.js';
 import { CategoriesScreen } from './CategoriesScreen.js';
 import { ExpenseForm } from './ExpenseForm.js';
 import { ExpenseList } from './ExpenseList.js';
+import { HomeScreen } from './HomeScreen.js';
 import { toDisplayMoney } from '../budget.js';
 import { deleteExpense, deleteTrip, resetData, setPendingDelete, setScreen, toggleConverted } from '../store.js';
 
 // Orden de la barra inferior según el wireframe. hasAmounts: muestra el botón ₡ ⇄ $ (design.md §3).
 // needsTrip: sin viaje se muestra NoTripNotice. render: cada pantalla se conecta aquí en su tarea (T3.2 a T3.7).
 const SCREENS = [
-  { id: 'home', label: 'Inicio', icon: 'home', title: 'Hoy', hasAmounts: true, needsTrip: true, task: 'T3.6' },
+  { id: 'home', label: 'Inicio', icon: 'home', title: 'Hoy', hasAmounts: true, needsTrip: true, render: HomeScreen },
   { id: 'expenses', label: 'Gastos', icon: 'wallet', title: 'Gastos', hasAmounts: true, needsTrip: true, render: ExpenseList },
   { id: 'itinerary', label: 'Itinerario', icon: 'calendar', title: 'Itinerario', hasAmounts: false, needsTrip: true, task: 'T3.7' },
   { id: 'categories', label: 'Categorías', icon: 'grid', title: 'Categorías', hasAmounts: true, needsTrip: true, render: CategoriesScreen },

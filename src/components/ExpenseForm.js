@@ -28,15 +28,17 @@ function createDraft(trip, expense = null) {
   return { editingId: null, type: 'on-trip', amount: '', categoryId: '', date: todayInTrip ? today : '' };
 }
 
-// Abre el formulario vacío o con un gasto cargado para editarlo (lo usa ExpenseList).
-export function openExpenseForm(trip, expense = null) {
-  draft = createDraft(trip, expense);
+// Abre el formulario vacío o con un gasto cargado para editarlo (lo usan ExpenseList y HomeScreen).
+// returnTo: pantalla a la que se vuelve al guardar o cancelar.
+export function openExpenseForm(trip, expense = null, returnTo = 'expenses') {
+  draft = { ...createDraft(trip, expense), returnTo };
   setScreen('expense-form');
 }
 
 function closeForm() {
+  const returnTo = draft?.returnTo ?? 'expenses';
   draft = null;
-  setScreen('expenses');
+  setScreen(returnTo);
 }
 
 // Selector de una opción entre varios botones; actualiza el borrador sin redibujar la pantalla.

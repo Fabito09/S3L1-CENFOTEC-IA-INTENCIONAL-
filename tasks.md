@@ -89,7 +89,7 @@
   - **REQ:** 029, 030.
   - **Hecho cuando:** al eliminar un gasto, el monto vuelve al disponible.
 
-- [ ] **T3.6 Pantalla Inicio: `components/HomeScreen.js`** (wireframe 3)
+- [x] **T3.6 Pantalla Inicio: `components/HomeScreen.js`** (wireframe 3)
   - **Qué:** `FoodTodayCard` (disponible, acumulado y límite), `OverLimitAlert` solo si el disponible es negativo, `BudgetProgress` del viaje, y los mensajes de "viaje no iniciado / finalizado" y "creá la categoría Comida".
   - **REQ:** 007, 031, 034–041.
   - **Hecho cuando:** al registrar un gasto de Comida hoy, el disponible se recalcula al volver a Inicio.
