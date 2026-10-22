@@ -1,6 +1,6 @@
 # Especificación de Requerimientos: NomadPulse Travel Assistant
 
-**Versión:** 2.0 (final, auditada, Paso 3)
+**Versión:** 2.1 (S3L2, Paso 1: armonización con contrato y wireframe)
 **Tipo de aplicación:** Aplicación web de itinerarios y control de presupuesto para viajes
 **Uso:** Especificación oficial para el siguiente laboratorio
 
@@ -10,10 +10,14 @@
 
 | Término | Definición |
 |---|---|
-| Viaje | Registro con nombre, fecha de inicio, fecha de fin y presupuesto total. |
+| Viaje | Registro con nombre, fecha de inicio, fecha de fin, moneda y presupuesto total. |
+| Moneda del viaje | Colones (₡) o dólares ($). Se elige al crear el viaje, todos sus montos usan esa moneda y no se puede cambiar después; los montos guardados nunca se convierten. |
+| Tipo de cambio | Colones por 1 dólar, ingresado a mano por el usuario (la app no lo consulta en internet, REQ-022). Opcional. |
+| Vista convertida | Forma de ver los montos del viaje en la otra moneda (₡ ↔ $) usando el tipo de cambio. Solo cambia lo que se muestra, no los datos ni los cálculos. |
 | Días Totales | Cantidad de días del viaje: (fecha de fin − fecha de inicio) + 1. |
-| Categoría | Agrupación de gastos creada por el usuario (ej. Comida, Transporte, Hospedaje), con un monto asignado. |
-| Gasto previo | Compra realizada antes del viaje (tiquetes aéreos, reservas de hospedaje, seguros). |
+| Categoría | Agrupación de gastos creada por el usuario (ej. Comida, Transporte, Hospedaje), con un monto asignado. Los nombres se comparan sin distinguir mayúsculas ni espacios al inicio o al final. |
+| Categoría Comida | La categoría cuyo nombre es "Comida" (comparado como se indica en Categoría). |
+| Gasto previo | Compra realizada antes del viaje (tiquetes aéreos, reservas de hospedaje, seguros). Su fecha es anterior a la fecha de inicio del viaje. |
 | Gasto durante el viaje | Consumo registrado en una fecha dentro del rango del viaje. |
 | Presupuesto Total Comida | Monto asignado por el usuario a la categoría Comida. |
 | Límite diario de comida | Presupuesto Total Comida / Días Totales. |
@@ -27,14 +31,17 @@
 
 ### 1.1 Viaje, presupuesto y categorías
 
-- **REQ-001:** WHEN el usuario crea un viaje, IF ingresó nombre, fecha de inicio, fecha de fin y un presupuesto total mayor a cero, THEN the system SHALL guardar el viaje y calcular los Días Totales.
-- **REQ-002:** WHEN el usuario crea o renombra una categoría, IF el nombre no está vacío y no existe otra categoría con el mismo nombre, THEN the system SHALL guardar la categoría con su monto asignado.
+- **REQ-001:** WHEN el usuario crea un viaje, IF ingresó nombre, fecha de inicio, fecha de fin, moneda y un presupuesto total mayor a cero, THEN the system SHALL guardar el viaje y calcular los Días Totales.
+- **REQ-002:** WHEN el usuario crea o renombra una categoría, IF el nombre no está vacío y no existe otra categoría con el mismo nombre (sin distinguir mayúsculas ni espacios al inicio o al final), THEN the system SHALL guardar la categoría con su monto asignado.
 - **REQ-003:** WHEN el usuario asigna o modifica el monto de una categoría, IF la suma de los montos de todas las categorías supera el presupuesto total, THEN the system SHALL rechazar el cambio y mostrar un mensaje indicando el monto disponible para asignar.
 - **REQ-004:** WHEN el usuario define o modifica el monto de la categoría Comida, THEN the system SHALL calcular el límite diario de comida con la fórmula exacta: Límite diario de comida = Presupuesto Total Comida / Días Totales.
+- **REQ-045:** WHEN el sistema muestra un monto del viaje, THEN the system SHALL mostrarlo con el símbolo de la moneda del viaje (₡ o $).
+- **REQ-047:** WHEN el usuario presiona el botón de conversión, IF el viaje tiene tipo de cambio, THEN the system SHALL mostrar todos los montos en la otra moneda (₡ ↔ $) como vista convertida, sin modificar los montos guardados ni los cálculos, y volver a la moneda del viaje al presionarlo de nuevo; IF no tiene tipo de cambio, THEN the system SHALL mostrar un mensaje indicando que debe ingresarlo en la pantalla del viaje. Los formularios siempre reciben montos en la moneda del viaje.
+- **REQ-048:** WHEN el usuario ingresa o modifica el tipo de cambio del viaje, IF es un número mayor a cero, THEN the system SHALL guardarlo y actualizar la vista convertida; IF no lo es, THEN the system SHALL rechazarlo y mostrar un mensaje de error.
 
 ### 1.2 Registro de gastos
 
-- **REQ-005:** WHEN el usuario registra un gasto previo, IF el monto es mayor a cero y tiene una categoría asignada, THEN the system SHALL restar el monto del presupuesto disponible total y del disponible de su categoría, marcándolo como "previo".
+- **REQ-005:** WHEN el usuario registra un gasto previo, IF el monto es mayor a cero, tiene una categoría asignada y su fecha es anterior a la fecha de inicio del viaje, THEN the system SHALL restar el monto del presupuesto disponible total y del disponible de su categoría, marcándolo como "previo".
 - **REQ-006:** WHEN el usuario registra un gasto durante el viaje, IF el monto es mayor a cero y la fecha está dentro del rango del viaje, THEN the system SHALL asociar el gasto a esa fecha, restarlo del presupuesto disponible total y del disponible de su categoría, y actualizar el Acumulado del Día.
 - **REQ-007:** WHEN se recalcula el disponible de hoy, IF el disponible de hoy es menor a cero, THEN the system SHALL mostrar una alerta visual de advertencia sin bloquear el registro del gasto.
 
@@ -66,21 +73,23 @@
 - **REQ-014:** WHEN el usuario registra un gasto durante el viaje, IF la fecha está fuera del rango del viaje, THEN the system SHALL rechazar el gasto y mostrar un mensaje de error.
 - **REQ-015:** WHEN el usuario registra un gasto, IF no seleccionó una categoría, THEN the system SHALL rechazar el registro y mostrar un mensaje de error.
 - **REQ-016:** WHEN el usuario intenta eliminar una categoría, IF la categoría tiene gastos asociados, THEN the system SHALL bloquear la eliminación y mostrar un mensaje indicando cuántos gastos están asociados.
+- **REQ-044:** WHEN el usuario registra o edita un gasto previo, IF la fecha es igual o posterior a la fecha de inicio del viaje, THEN the system SHALL rechazar el gasto y mostrar un mensaje de error.
 
 ### 2.1 Edición de un viaje ya creado
 
 - **REQ-024:** WHEN el usuario edita la fecha de inicio o de fin de un viaje, IF la nueva fecha de fin es anterior a la nueva fecha de inicio, THEN the system SHALL rechazar el cambio y mostrar un mensaje de error.
-- **REQ-025:** WHEN el usuario edita la fecha de inicio o de fin de un viaje, IF existen gastos durante el viaje o actividades del itinerario con fechas fuera del nuevo rango, THEN the system SHALL bloquear el cambio y mostrar la lista de registros afectados para que el usuario los mueva o elimine primero.
+- **REQ-025:** WHEN el usuario edita la fecha de inicio o de fin de un viaje, IF existen gastos durante el viaje o actividades del itinerario con fechas fuera del nuevo rango, o gastos previos con fecha igual o posterior a la nueva fecha de inicio, THEN the system SHALL bloquear el cambio y mostrar la lista de registros afectados para que el usuario los mueva o elimine primero.
 - **REQ-026:** WHEN el usuario edita la fecha de inicio o de fin de un viaje, IF el cambio es válido, THEN the system SHALL recalcular los Días Totales y el límite diario de comida.
 - **REQ-027:** WHEN el usuario edita el presupuesto total de un viaje, IF el nuevo monto es menor a la suma de los montos asignados a las categorías, THEN the system SHALL rechazar el cambio y mostrar la diferencia que debe reducir en las categorías.
 - **REQ-028:** WHEN el usuario solicita eliminar un viaje, THEN the system SHALL pedir confirmación y, al confirmarse, eliminar el viaje junto con sus categorías, gastos y actividades.
+- **REQ-046:** WHEN el usuario edita un viaje ya creado, THEN the system SHALL mostrar la moneda como solo lectura y SHALL NOT permitir cambiarla, porque los montos registrados no se convierten entre monedas.
 
 ### 2.2 Edición y eliminación de transacciones
 
 - **REQ-029:** WHEN el usuario solicita eliminar un gasto, THEN the system SHALL pedir confirmación antes de eliminarlo.
 - **REQ-030:** WHEN el usuario confirma la eliminación de un gasto, THEN the system SHALL eliminarlo, devolver su monto al disponible de su categoría y al presupuesto disponible total, y recalcular el Acumulado del Día de ese gasto.
 - **REQ-031:** WHEN se recalcula el disponible de hoy, IF el disponible de hoy es mayor o igual a cero, THEN the system SHALL quitar la alerta visual de advertencia.
-- **REQ-032:** WHEN el usuario edita el monto, la fecha o la categoría de un gasto, IF los nuevos datos cumplen las validaciones de REQ-011 a REQ-015, THEN the system SHALL revertir el efecto del gasto original y aplicar el efecto del gasto modificado, recalculando el acumulado de los días y categorías involucrados.
+- **REQ-032:** WHEN el usuario edita el monto, la fecha o la categoría de un gasto, IF los nuevos datos cumplen las validaciones de REQ-011 a REQ-015 y REQ-044, THEN the system SHALL revertir el efecto del gasto original y aplicar el efecto del gasto modificado, recalculando el acumulado de los días y categorías involucrados.
 - **REQ-033:** WHEN el usuario edita un gasto, IF los nuevos datos no cumplen las validaciones, THEN the system SHALL rechazar el cambio y conservar el gasto original sin modificaciones.
 
 ---
@@ -104,7 +113,7 @@
 
 ## 5. Gestión Manual del Itinerario (EARS)
 
-- **REQ-010:** WHEN el usuario agrega una actividad al itinerario, IF la fecha está dentro del rango del viaje y la descripción no está vacía, THEN the system SHALL guardar la actividad en el día correspondiente, ordenada por hora cuando el usuario la indique y, sin hora, en el orden en que fue ingresada.
+- **REQ-010:** WHEN el usuario agrega una actividad al itinerario, IF la fecha está dentro del rango del viaje y la descripción no está vacía, THEN the system SHALL guardar la actividad en el día correspondiente, ordenada por hora cuando el usuario la indique; las actividades sin hora van después de las que tienen hora, en el orden en que fueron ingresadas.
 - **REQ-042:** WHEN el usuario edita una actividad del itinerario, IF la fecha está dentro del rango del viaje y la descripción no está vacía, THEN the system SHALL guardar los cambios y reordenar las actividades del día afectado.
 - **REQ-043:** WHEN el usuario solicita eliminar una actividad del itinerario, THEN the system SHALL pedir confirmación y, al confirmarse, eliminarla del día correspondiente.
 
@@ -115,8 +124,8 @@
 | Requerimiento del cliente | Requerimientos que lo cubren |
 |---|---|
 | 1. Gestión manual de itinerarios (sin generación automática ni recomendaciones) | REQ-010, REQ-042, REQ-043, REQ-020, REQ-021 |
-| 2. Presupuesto total y categorías personalizadas | REQ-001 a REQ-004, REQ-016, REQ-027 |
-| 3a. Gastos previos al viaje | REQ-005, REQ-036 |
+| 2. Presupuesto total y categorías personalizadas | REQ-001 a REQ-004, REQ-016, REQ-027, REQ-045 a REQ-048 |
+| 3a. Gastos previos al viaje | REQ-005, REQ-036, REQ-044 |
 | 3b. Gastos durante el viaje | REQ-006, REQ-007, REQ-029 a REQ-034 |
 | 4. Recordatorio diario de saldo | REQ-008, REQ-009, REQ-034 a REQ-041 |
 | Persistencia local (requisito del laboratorio) | REQ-017 a REQ-019, REQ-022 |
@@ -131,6 +140,7 @@
 | 1.1 (Paso 2, Ronda 1) | Casos de borde: edición de fechas y presupuesto del viaje, eliminación del viaje, edición y eliminación de gastos (REQ-024 a REQ-033). |
 | 1.2 (Paso 2, Ronda 2) | Rigor matemático y UI: fórmula exacta del disponible de hoy y lo que muestra la pantalla (REQ-034 a REQ-041); ajuste de REQ-004, REQ-007, REQ-008 y REQ-009. |
 | 2.0 (Paso 3) | Consolidación y revisión final: REQ-006 ahora resta del presupuesto total (consistencia con REQ-005 y REQ-030); REQ-031 alineado a la fórmula; REQ-002 cubre renombrar; REQ-010 sin suponer hora obligatoria; edición y eliminación de actividades (REQ-042, REQ-043); itinerario movido a su propia sección. |
+| 2.1 (S3L2, Paso 1) | Armonización con contrato y wireframe: moneda por viaje en ₡ o $, elegida al crear y sin cambio posterior (REQ-001, REQ-045, REQ-046); botón de vista convertida con tipo de cambio manual (REQ-047, REQ-048); fecha de gastos previos antes del inicio (REQ-044; ajuste de REQ-005, REQ-025 y REQ-032); categoría Comida y nombres únicos sin distinguir mayúsculas (REQ-002); actividades sin hora al final del día (REQ-010). |
 
 > Los IDs no se renumeran entre versiones para mantener la trazabilidad: un mismo REQ siempre se refiere a la misma regla.
 

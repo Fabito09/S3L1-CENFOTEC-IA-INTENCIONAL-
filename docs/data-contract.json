@@ -18,11 +18,13 @@
   "$defs": {
     "Trip": {
       "type": "object",
-      "required": ["id", "name", "startDate", "endDate", "globalBudget"],
+      "required": ["id", "name", "startDate", "endDate", "currency", "globalBudget"],
       "additionalProperties": false,
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "name": { "type": "string", "minLength": 1 },
+        "currency": { "enum": ["CRC", "USD"], "description": "Moneda del viaje: CRC (₡) o USD ($). Se elige al crear el viaje y no se puede cambiar; los montos guardados nunca se convierten (REQ-001, REQ-045, REQ-046)." },
+        "exchangeRate": { "type": "number", "exclusiveMinimum": 0, "description": "Opcional. Colones por 1 dólar, ingresado a mano. Solo se usa para la vista convertida (REQ-047, REQ-048)." },
         "startDate": { "type": "string", "format": "date" },
         "endDate": { "type": "string", "format": "date", "description": "No puede ser anterior a startDate (REQ-013)." },
         "globalBudget": { "$ref": "#/$defs/GlobalBudget" }
@@ -30,6 +32,7 @@
     },
     "GlobalBudget": {
       "type": "object",
+      "description": "Solo se guarda total. Gastado, disponible y porcentaje usado se calculan (getGlobalBudget).",
       "required": ["total"],
       "additionalProperties": false,
       "properties": {
@@ -42,7 +45,7 @@
       "additionalProperties": false,
       "properties": {
         "id": { "type": "string", "minLength": 1 },
-        "name": { "type": "string", "minLength": 1, "description": "Único. La de nombre \"Comida\" define foodBudget (REQ-002, REQ-004)." },
+        "name": { "type": "string", "minLength": 1, "description": "Único, comparado sin distinguir mayúsculas ni espacios al inicio o al final. La de nombre \"Comida\" (misma comparación) define foodBudget (REQ-002, REQ-004)." },
         "amount": { "type": "number", "exclusiveMinimum": 0, "description": "La suma de todas no supera globalBudget.total (REQ-003)." }
       }
     },
@@ -55,7 +58,7 @@
         "type": { "enum": ["pre-trip", "on-trip"], "description": "REQ-005, REQ-006." },
         "amount": { "type": "number", "exclusiveMinimum": 0, "description": "REQ-011." },
         "categoryId": { "type": "string", "minLength": 1, "description": "Id de una Category existente (REQ-015)." },
-        "date": { "type": "string", "format": "date", "description": "Si es on-trip, dentro del rango del Trip (REQ-014)." }
+        "date": { "type": "string", "format": "date", "description": "Si es pre-trip, anterior a startDate (REQ-044). Si es on-trip, dentro del rango del Trip (REQ-014)." }
       }
     },
     "ItineraryItem": {
@@ -65,8 +68,20 @@
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "date": { "type": "string", "format": "date", "description": "Dentro del rango del Trip (REQ-010)." },
-        "time": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$", "description": "Opcional, HH:MM. Sin hora: orden de ingreso (REQ-010)." },
+        "time": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$", "description": "Opcional, HH:MM. Con hora: orden por hora. Sin hora: al final del día, en orden de ingreso (REQ-010)." },
         "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "DailyFoodLimit": {
+      "description": "Calculado en cada render por calculateDailyFoodLimit; NO se guarda en LocalStorage (REQ-004, REQ-034 a REQ-039).",
+      "type": "object",
+      "required": ["limit", "dailySpent", "availableToday", "isOverLimit"],
+      "additionalProperties": false,
+      "properties": {
+        "limit": { "type": "number", "description": "foodBudget / totalDays." },
+        "dailySpent": { "type": "number", "description": "Suma de gastos on-trip de Comida con fecha de hoy." },
+        "availableToday": { "type": "number", "description": "limit − dailySpent. Puede ser negativo (REQ-039)." },
+        "isOverLimit": { "type": "boolean", "description": "true si availableToday < 0 (REQ-007, REQ-031)." }
       }
     }
   }
