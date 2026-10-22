@@ -22,7 +22,7 @@
 
 ## Fase 1: Lógica de negocio pura (sin interfaz)
 
-- [ ] **T1.1 Cálculos de presupuesto: `src/budget.js`**
+- [x] **T1.1 Cálculos de presupuesto: `src/budget.js`**
   - **Funciones:** `getToday`, `getTotalDays`, `isFoodCategory`, `getFoodBudget`, `getDailySpent`, **`calculateDailyFoodLimit`**, `getGlobalBudget`, `getUnassignedAmount`, `formatMoney`, `toDisplayMoney`.
   - **REQ:** 001, 003, 004, 005, 006, 026, 027, 030, 034–037, 041, 045, 047.
   - **Hecho cuando:** pasa `tests/budget.test.js` (T1.3).
