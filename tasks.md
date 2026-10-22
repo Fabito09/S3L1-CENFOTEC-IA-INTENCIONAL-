@@ -46,7 +46,7 @@
 
 ## Fase 2: Estado y persistencia
 
-- [ ] **T2.1 Guardado: `src/storage.js`**
+- [x] **T2.1 Guardado: `src/storage.js`**
   - **Funciones:** `saveState`, `loadState` (clave `nomadpulse.state`). Si los datos están dañados, devuelve un error y **no** sobrescribe.
   - **REQ:** 017, 018, 019, 022.
   - **Hecho cuando:** guardar, recargar con F5 y cargar devuelve el mismo estado; con un JSON dañado en LocalStorage, los datos originales siguen ahí.
