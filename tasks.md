@@ -15,7 +15,7 @@
 
 ## Fase 0: Base del proyecto
 
-- [ ] **T0.1 Estructura y arranque**
+- [x] **T0.1 Estructura y arranque**
   - **Archivos:** `src/index.html`, `src/styles.css`, `src/main.js` (vacío por ahora).
   - **Qué:** HTML con `<div id="app">` y `<script type="module" src="main.js">`. CSS base con la paleta "Tropical Costa Rica" de `design.md` §3.1 (variables `--bg`, `--primary`, `--accent`, `--alert`…), tarjetas redondeadas, botones tipo píldora y formato móvil.
   - **Hecho cuando:** `npx serve src` abre la página en el navegador sin errores en la consola.
