@@ -58,7 +58,7 @@
   - **REQ:** 016, 017, 023, 025, 027, 028, 030, 032, 033, 046.
   - **Hecho cuando:** desde la consola del navegador se puede crear un viaje, una categoría y un gasto, y recargar sin perder nada.
 
-- [ ] **T2.3 Arranque: `src/main.js`**
+- [x] **T2.3 Arranque: `src/main.js`**
   - **Qué:** `loadState` → `subscribe(render)` → primer render.
   - **Hecho cuando:** la app arranca con los datos guardados (o vacía si es la primera vez).
 
