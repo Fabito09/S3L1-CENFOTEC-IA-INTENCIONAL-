@@ -1,47 +1,74 @@
 # NomadPulse Travel Assistant
 
-App web para planear viajes y controlar el presupuesto, con un límite diario de comida. Funciona solo en el navegador y guarda todo en LocalStorage.
+App web para planear un viaje y controlar su presupuesto, con un **límite diario de comida** que se recalcula con cada gasto. Funciona solo en el navegador y guarda todo en LocalStorage, sin servidor ni base de datos.
 
-**Laboratorio S3L1:** Diseño Técnico e Inyección de Memoria Semántica (Universidad CENFOTEC).
-**Idea principal:** primero se definen las reglas, después el diseño y al final el código (Semana 4).
+**Laboratorios:** S3L1 (Diseño Técnico y Memoria Semántica) y S3L2 (Re-ingeniería Intencional, Spec-Driven Coding), Universidad CENFOTEC.
 
-## Proceso paso a paso
+## Cómo ejecutar
 
-**Antes (Semana 2):** se escribieron las reglas de la app.
-- `docs/requirements.md`: qué debe hacer la app, regla por regla (REQ-001 a REQ-043).
-- `docs/data-contract.json`: cómo se guardan los datos.
-- `docs/wireframe.png`: cómo se ven las pantallas.
+Requisito: [Node.js](https://nodejs.org/) 22 o superior (se probó con Node 24).
 
-**Paso 1: Memoria semántica (`CLAUDE.md`).**
-Archivo que la IA lee siempre antes de trabajar. Le dice:
-- Qué nombres usar: `Trip`, `GlobalBudget`, `Category`, `Expense`, `DailyFoodLimit`, `ItineraryItem`.
-- Qué reglas no puede romper: guardar todo en LocalStorage, rechazar montos ≤ 0 o vacíos, y calcular la comida del día con `(Total Comida / Días Totales) − Acumulado del Día`.
+```bash
+# 1. Levantar la app (desde la raíz del repositorio)
+npx serve src
 
-**Paso 2: Diseño técnico (`docs/design.md`).**
-Con todo lo anterior, la IA propuso cómo construir la app:
-- Las pantallas y componentes, según el wireframe.
-- Los módulos y dónde vive cada dato (estado global o LocalStorage).
-- Un diagrama Mermaid del flujo de datos.
-- Una tabla que dice qué parte del diseño cumple cada REQ.
+# 2. Abrir en el navegador
+#    http://localhost:3000
+```
 
-**Paso 3: Auditoría y poda.**
-Se revisó el diseño de la IA en dos rondas:
-- **Poda:** se quitaron piezas innecesarias (`router.js`, `eventBus.js` y `models/`) para dejarlo simple.
-- **Mapeo:** se aseguró que las reglas críticas tengan su propia función: `calculateDailyFoodLimit` para la comida y `validateAmount` para los montos.
+> La app usa módulos de JavaScript (`type="module"`), por eso necesita un servidor local. Si se abre `src/index.html` con doble clic, el navegador bloquea los módulos y la página se queda en "Cargando NomadPulse…". También sirve la extensión **Live Server** de VS Code apuntando a `src/`.
 
-**Cierre: retrospectiva (`retrospective.md`).**
-Respuestas a las 3 preguntas de reflexión del laboratorio.
+## Cómo correr las pruebas
+
+```bash
+node --test tests/*.test.js
+```
+
+Son 30 pruebas, sin librerías, con el runner que trae Node. Cada prueba lleva en su nombre el `REQ-XXX` que verifica: fórmula de comida, sin arrastre entre días, rechazo de montos negativos, fechas de gastos previos, vista convertida ₡ ⇄ $ y orden del itinerario.
+
+## Verificación del negocio (las 3 pruebas del cliente)
+
+Para la demo, creá un viaje **cuyas fechas incluyan el día de hoy**; si no, Inicio muestra "Tu viaje aún no inicia" y no aparece el disponible de comida (REQ-040).
+
+| Prueba | Cómo hacerla | Qué debe pasar |
+|---|---|---|
+| **Persistencia** | Crear viaje, categorías y gastos; presionar **F5** | No se pierde nada |
+| **Restricción semántica** | Gastos → + Registrar gasto → monto **−500** | "⚠ El monto debe ser mayor a cero." y no se guarda |
+| **Lógica dinámica** | Categoría Comida ₡50 000, viaje de 5 días; registrar Comida ₡7 000 hoy | Inicio muestra **₡3 000** = (₡50 000 ÷ 5 días) − ₡7 000 |
+
+El resultado de la prueba de estrés completa está en `tasks.md` (T5.1).
 
 ## Estructura
 
 ```
 /
-├── CLAUDE.md               # Paso 1: memoria semántica
+├── CLAUDE.md               # Memoria semántica: lenguaje ubicuo, invariantes y reglas para la IA
 ├── docs/
-│   ├── requirements.md     # Reglas en formato EARS
-│   ├── data-contract.json  # Contrato de datos
-│   ├── wireframe.png       # Bocetos de pantallas
-│   └── design.md           # Pasos 2 y 3: diseño técnico auditado
-├── README.md               # Este resumen
-└── retrospective.md        # Preguntas de reflexión
+│   ├── requirements.md     # Requerimientos en sintaxis EARS (REQ-001 a REQ-048)
+│   ├── data-contract.json  # Contrato de datos (JSON Schema) de lo que se guarda
+│   ├── design.md           # Diseño técnico: módulos, funciones y mapeo REQ → código
+│   ├── wireframe.png       # Bocetos de las 6 pantallas (fuente: wireframe.html)
+│   ├── wireframe.html
+│   ├── retrospectiva.md    # Retrospectiva individual del S3L2
+│   └── retrospectiva-s3l1.md  # Retrospectiva del S3L1 (entregada antes; versión original en el tag s3l1-entrega)
+├── tasks.md                # Plan de implementación por fases (todas las tareas en [x])
+├── src/                    # Código de la app
+│   ├── index.html, styles.css, main.js
+│   ├── budget.js           # Cálculos: comida diaria, presupuesto, formato de montos
+│   ├── validation.js       # Validaciones: montos, fechas, nombres
+│   ├── storage.js          # LocalStorage (no sobrescribe datos dañados)
+│   ├── store.js            # Estado global y acciones: validar → modificar → guardar → avisar
+│   ├── reminder.js         # Recordatorio diario y aviso de las 08:00
+│   └── components/         # Pantallas (una por wireframe) y ayudantes de interfaz
+├── tests/                  # Pruebas con node --test
+└── README.md
 ```
+
+## Cómo se construyó
+
+1. **Reglas primero (Semana 2):** `requirements.md`, `data-contract.json` y el wireframe.
+2. **S3L1:** memoria semántica (`CLAUDE.md`) y diseño técnico (`design.md`), auditado en dos rondas.
+3. **S3L2, Paso 1:** auditoría y armonización de los artefactos (moneda por viaje, vista convertida, fecha de gastos previos, categoría Comida, orden del itinerario).
+4. **S3L2, Paso 2:** plan `tasks.md` y `CLAUDE.md` actualizado.
+5. **S3L2, Paso 3:** ejecución tarea por tarea, con revisión y un commit por tarea, bajo la regla de *Unchanged Behavior*.
+6. **S3L2, Paso 4:** prueba de estrés de las 3 reglas del cliente (T5.1).

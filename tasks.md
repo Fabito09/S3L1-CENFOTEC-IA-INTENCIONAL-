@@ -114,6 +114,6 @@
   3. **Lógica dinámica:** registrar un gasto de Comida hoy y comprobar que el disponible se recalcula con `(Total Comida / Días Totales) − Acumulado del Día`.
   - **Hecho cuando:** las 3 pasan y además `node --test tests/*.test.js` está en verde.
 
-- [ ] **T5.2 Documentación de cierre**
+- [x] **T5.2 Documentación de cierre**
   - **Archivos:** `README.md` (agregar cómo ejecutar la app y las pruebas) y `docs/retrospectiva.md` (las 3 preguntas de la guía S3L2).
   - **Hecho cuando:** la estructura del repo coincide con la que pide la guía S3L2.
